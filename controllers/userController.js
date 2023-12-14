@@ -10,9 +10,10 @@ const User = require('../models/User');
 
 const getAllUsers = asyncHandler(async (req, res) => {
 
-    const users = await user.find().select('-password').lean()
+    const users = await User.find().select('-password').lean()
     //exclude password
-    if (!users) {
+    if (!users?.length) {
+        //optional chaining here. this is checking if users exists before looking at the length property
         return res.status(400).json({ message: 'No users found' })    
     }
 
@@ -89,9 +90,9 @@ const updateUser = asyncHandler(async (req, res) => {
         user.password = await bcrypt.hash(password, 10) //10 salt rounds
     }
 
-    const updateUserd = await user.save()
+    const updateUser = await user.save()
 
-    res.json({  message: `${updatedUsername.username} updated.`})
+    res.json({  message: `${updateUser.username} updated.`})
 
 })
 
